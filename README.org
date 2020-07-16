@@ -1,0 +1,24 @@
+* About
+
+An implementation of https://github.com/Camber-Cyber-Division/shortest-path-server
+
+* Build Instructions
+
+  This requires a stable rust supporting the 2018 edition. I've tested with Cargo 1.41.0.
+
+  Invoking =cargo run --release= with start a server listening on =localhost:7777=.
+
+* Example
+
+  #+begin_src shell
+    $ cargo run --release &
+       Compiling shortest-path-server v0.1.0 (/home/badi/code/playground/rust/shortest-path-server)
+        Finished release [optimized] target(s) in 1.29s
+         Running `target/release/shortest-path-server`
+
+    $ for i in 1 2 3 4; do echo "$(cat data/map$i.bin | nc localhost 7777)" done
+    1->3->2->5 (20)
+    65535->32768->32767 (65535)
+    1->2->4 (2)
+    No path from '1' to '2'
+  #+end_src
