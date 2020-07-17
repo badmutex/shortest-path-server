@@ -60,15 +60,12 @@ impl <T> Matrix<T> where T: std::fmt::Display+std::fmt::Debug {
     }
 
     #[inline]
-    fn index(&self, row: usize, col: usize) -> usize {
-        row * self.rows + col
-    }
-
     pub fn set (&mut self, i: usize, j: usize, val: T) {
         let mut row = &mut self.m[i];
         row.insert(j, val);
     }
 
+    #[inline]
     pub fn get(&self, i: usize, j: usize) -> Option<&T> {
         self.m.get(i).and_then(|r| r.get(&j))
     }
