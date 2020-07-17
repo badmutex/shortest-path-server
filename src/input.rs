@@ -1,10 +1,7 @@
 use std::cmp;
-use std::slice::ChunksExact;
 use std::convert::TryInto;
 use std::convert::From;
-use std::fs::File;
 use std::io;
-use std::io::Read;
 
 #[derive(Debug)]
 pub enum Error {
@@ -48,7 +45,7 @@ impl Input {
             edges: Vec::with_capacity(count as usize),
         };
 
-        for i in 0..count {
+        for _ in 0..count {
             let from = items.next().ok_or(Error::DecodeError("edge source"))?;
             let to = items.next().ok_or(Error::DecodeError("edge target"))?;
             let cost = items.next().ok_or(Error::DecodeError("edge weight"))?;
@@ -86,6 +83,8 @@ mod tests {
     use assert2::assert;
 
     use std::path::Path;
+    use std::fs::File;
+    use std::io::Read;
 
     #[test]
     fn from_decimals() {

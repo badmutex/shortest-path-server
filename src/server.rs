@@ -1,9 +1,8 @@
-use std::net::{TcpListener, TcpStream, SocketAddr, ToSocketAddrs, IpAddr, Ipv4Addr};
+use std::net::{TcpListener, IpAddr, Ipv4Addr};
 use std::io::{Read, Write};
 use std::io;
 use std::convert::From;
 use std::str::FromStr;
-use std::thread;
 use std::time::{Duration, Instant};
 
 use crate::input;
@@ -13,18 +12,21 @@ use crate::graph;
 pub enum Error {}
 
 impl From<input::Error> for Error {
+    #[allow(unused)]
     fn from(err: input::Error) -> Error {
         unimplemented!()        // TODO:
     }
 }
 
 impl From<graph::Error> for Error {
+    #[allow(unused)]
     fn from(err: graph::Error) -> Error {
         unimplemented!()        // TODO:
     }
 }
 
 impl From<io::Error> for Error {
+    #[allow(unused)]
     fn from(err: io::Error) -> Error {
         unimplemented!()        // TODO:
     }
@@ -57,7 +59,7 @@ pub fn shortest_path(stream: &mut dyn Read) -> Result<graph::PathResult, Error> 
     let timer = Instant::now();
     let inp = {
         let mut bytes = Vec::new();
-        stream.read_to_end(&mut bytes);
+        stream.read_to_end(&mut bytes)?;
         input::Input::from_bytes(&bytes)?
     };
     let t_parse = timer.elapsed();
@@ -121,7 +123,9 @@ mod tests {
 
     use super::*;
     use std::fs::File;
+    use std::thread;
     use assert2::assert;
+    use std::net::TcpStream;
 
     #[test]
     fn test_map1() {
@@ -142,14 +146,14 @@ mod tests {
         let data = {
             let mut f = File::open("data/map1.bin").unwrap();
             let mut buf = Vec::new();
-            f.read_to_end(&mut buf);
+            f.read_to_end(&mut buf).unwrap();
             buf
         };
 
         let mut conn = TcpStream::connect(addr).unwrap();
-        conn.write(&data);
+        conn.write(&data).unwrap();
 
-        let resp = {
+        let _resp = {           // TODO: check return value
             let mut resp = String::new();
             conn.read_to_string(&mut resp).unwrap();
             resp

@@ -1,6 +1,5 @@
 use std::vec::Vec;
 use std::collections::{HashMap, LinkedList};
-use std::cmp;
 use std::default::Default;
 
 type Weight = usize;
@@ -61,7 +60,7 @@ impl <T> Matrix<T> where T: std::fmt::Display+std::fmt::Debug {
 
     #[inline]
     pub fn set (&mut self, i: usize, j: usize, val: T) {
-        let mut row = &mut self.m[i];
+        let row = &mut self.m[i];
         row.insert(j, val);
     }
 
@@ -72,7 +71,7 @@ impl <T> Matrix<T> where T: std::fmt::Display+std::fmt::Debug {
 }
 
 impl DiGraph {
-    pub fn new_with(nodes: usize, init: Weight) -> DiGraph
+    pub fn new(nodes: usize) -> DiGraph
     {
         let mut out_degrees = Vec::with_capacity(nodes);
         out_degrees.resize(nodes, 0);
@@ -87,14 +86,11 @@ impl DiGraph {
         }
     }
 
-    pub fn new(nodes: usize) -> DiGraph
-    {
-        DiGraph::new_with(nodes, Default::default())
-    }
-
+    #[allow(unused)]
     pub fn node_exists(&self, n: usize) -> bool {
         n <= self.num_nodes
     }
+
 
     pub fn edge_exists(&self, s: usize, t: usize) -> bool {
         let w = self.adjacency.get(s, t);
@@ -255,6 +251,7 @@ impl DiGraph {
 
 }
 
+#[allow(unused)]
 #[cfg(test)]
 mod tests {
     use super::*;
