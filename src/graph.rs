@@ -44,19 +44,18 @@ pub struct PathResult {
 #[derive(Debug)]
 pub struct Matrix<T> {
     pub rows: usize,
-    pub columns: usize,
     m: Vec<HashMap<usize, T>>,
 }
 
 
 impl <T> Matrix<T> where T: std::fmt::Display+std::fmt::Debug {
-    pub fn new(rows: usize, columns: usize) -> Matrix<T>
+    pub fn new(rows: usize) -> Matrix<T>
         where T: Default + Clone
     {
         let mut m = Vec::with_capacity(rows);
         m.resize(rows, HashMap::new());
         Matrix{
-            rows, columns, m
+            rows, m
         }
     }
 
@@ -87,7 +86,7 @@ impl DiGraph {
             num_nodes: nodes,
             num_edges: 0,
             out_degrees, in_degrees,
-            adjacency: Matrix::new(nodes, nodes)
+            adjacency: Matrix::new(nodes)
         }
     }
 
@@ -266,9 +265,8 @@ mod tests {
 
     #[test]
     fn matrix() {
-        let mut m: Matrix<u32> = Matrix::new(5, 6);
+        let mut m: Matrix<u32> = Matrix::new(5);
         assert_eq!(m.rows, 5);
-        assert_eq!(m.columns, 6);
 
         m.set(0, 1, 42);
         let r = m.get(0, 1);

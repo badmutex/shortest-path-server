@@ -22,3 +22,48 @@ An implementation of https://github.com/Camber-Cyber-Division/shortest-path-serv
     1->2->4 (2)
     No path from '1' to '2'
   #+end_src
+
+* Design and Implementation
+
+  There are several phases to this: input parsing, graph and path searching, tcp service.
+  The high-level steps are:
+
+  1. accept a socket and read raw bytes from it
+  2. do a pass to convert to a datastructure representing the input specification (linear time)
+  3. load the input spec into the graph datastructure
+  4. search for the shortest path
+  5. write back to the client over the socket
+
+  The implementation separates these into components:
+
+  - [[file:src/input.rs][input.rs]] defines the input specification and conversion from raw bytes to 16 bit unsigned integers
+  - [[file:src/graph.rs][graph.rs]] specifies the graph datastructure and shortest path search implementation
+  - [[file:src/server.rs][server.rs]] implements a TCP server
+  - [[file:src/main.rs][main.rs]] is the main entry point
+
+** Graph and Shortest Path
+
+   Graph implementation uses an adjacency list approach: an array
+   mapping a source node to a hashmap where the key is the target node
+   and the value is the weight.
+
+   Shortest path is computed using Kahn's Topological sort algorithm
+   to order the nodes then doing a linear probe to find the shortest
+   path from source =s= to all nodes in the graph and runs in linear
+   time.  The algorithm is attributed to Cormen, Leiserson, Rivest,
+   and Stein's 1990/2009 Introduction to Algorithms textbook.
+
+
+* Benchmarks
+
+  I was curious about the overhead of each of the steps in [[#design-and-implementation][Design and
+  Implementation]] so the server reports some timing data on the phases.
+
+  - =parse= is input parsing to convert to input specficiation datastructure
+  - =load= is graph construction
+  - =search= is shortest path searching
+
+  (see [[file:run-benchmarks.sh][run-benchmarks.sh]] for invocation).
+
+  The results are detailed in [[file:Benchmarks.ipynb][Benchmarks.ipynb]] comparing the effects
+  of compiler optimization.

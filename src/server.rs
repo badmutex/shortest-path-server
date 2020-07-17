@@ -4,7 +4,7 @@ use std::io;
 use std::convert::From;
 use std::str::FromStr;
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::input;
 use crate::graph;
@@ -54,12 +54,18 @@ impl Response {
 }
 
 pub fn shortest_path(stream: &mut dyn Read) -> Result<graph::PathResult, Error> {
+    let timer = Instant::now();
     let inp = {
         let mut bytes = Vec::new();
         stream.read_to_end(&mut bytes);
         input::Input::from_bytes(&bytes)?
     };
+    let t_parse = timer.elapsed();
+    println!("{} nodes {} edges\n  parsing: {} μs",
+             inp.nodes, inp.edges.len(),
+             t_parse.as_micros());
 
+    let timer = Instant::now();
     let g = {
         let mut g = graph::DiGraph::new(1 + inp.nodes as usize);
         for edge in inp.edges.into_iter() {
@@ -71,8 +77,20 @@ pub fn shortest_path(stream: &mut dyn Read) -> Result<graph::PathResult, Error> 
         }
         g
     };
+    let t_load = timer.elapsed();
+    println!("  loading: {} μs", t_load.as_micros());
 
+    let timer = Instant::now();
     let path = g.shortest_path(inp.start as usize, inp.end as usize)?;
+    let t_search = timer.elapsed();
+    println!("  search: {} μs", t_search.as_micros());
+
+    eprintln!("{},{},{},{},{}",
+              g.num_nodes, g.num_edges,
+              t_parse.as_micros(),
+              t_load.as_micros(),
+              t_search.as_micros(),
+    );
     Ok(path)
 }
 
