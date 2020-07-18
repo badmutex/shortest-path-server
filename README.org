@@ -1,0 +1,1 @@
+[[https://github.com/badmutex/shortest-path-server/workflows/Rust/badge.svg][https://github.com/badmutex/shortest-path-server/workflows/Rust/badge.svg]]
