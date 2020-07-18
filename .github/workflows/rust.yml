@@ -1,0 +1,29 @@
+name: Rust
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'rust/**'
+  pull_request:
+    branches: [ main ]
+    paths: 
+      - 'rust/**'
+
+env:
+  CARGO_TERM_COLOR: always
+  
+defaults:
+  run:
+    working-directory: 'rust'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: cargo build
+    - name: Run tests
+      run: cargo test
