@@ -65,5 +65,5 @@ An implementation of https://github.com/Camber-Cyber-Division/shortest-path-serv
 
   (see [[file:run-benchmarks.sh][run-benchmarks.sh]] for invocation).
 
-  The results are detailed in [[file:Benchmarks.ipynb][Benchmarks.ipynb]] comparing the effects
+  The results are detailed in [[file:../Benchmarks.ipynb][Benchmarks.ipynb]] comparing the effects
   of compiler optimization.
