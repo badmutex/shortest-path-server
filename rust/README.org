@@ -1,3 +1,5 @@
+[[https://github.com/badmutex/shortest-path-server/workflows/Rust/badge.svg][https://github.com/badmutex/shortest-path-server/workflows/Rust/badge.svg]]
+
 * About
 
 An implementation of https://github.com/Camber-Cyber-Division/shortest-path-server
