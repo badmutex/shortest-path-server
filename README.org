@@ -11,7 +11,7 @@
   | Language | local path | badge                                                                     |
   |----------+------------+---------------------------------------------------------------------------|
   | rust     | [[file:rust][rust]]       | [[https://github.com/badmutex/shortest-path-server/workflows/Rust/badge.svg][https://github.com/badmutex/shortest-path-server/workflows/Rust/badge.svg]] |
-  | go       | [[file:go]]    |                                                                           |
+  | go       | [[file:go]]    | [[https://github.com/badmutex/shortest-path-server/workflows/Go/badge.svg][https://github.com/badmutex/shortest-path-server/workflows/Go/badge.svg]]   |
 
 * General Problem
 
