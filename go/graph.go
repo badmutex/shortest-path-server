@@ -193,6 +193,19 @@ func (g DiGraph) TopSortKahn() ([]node, error) {
 
 }
 
+func PrintPred(arr []*node) {
+	fmt.Printf("pred: [ ")
+	for _, p := range arr {
+		if p == nil {
+			fmt.Printf("Ø")
+		} else {
+			fmt.Printf("%v", *p)
+		}
+		fmt.Printf(" ")
+	}
+	fmt.Printf(" ]\n")
+}
+
 func (g DiGraph) ShortestPath(source, target node) (result PathResult, err error) {
 	// d <- track shortest paths from s to d[i] (where i is all other nodes in the graph)
 	// p <- predecessors s.t. p[u] is the predecessor of u in shortest path s to u
@@ -213,7 +226,15 @@ func (g DiGraph) ShortestPath(source, target node) (result PathResult, err error
 	}
 	dist[source] = Weight(0)
 
-	pred := make([]*node, g.numNodes)
+	// emulating an Optional-type using pointers is a bad idea
+	// thus
+	// - negative node id indicates no connection
+	// - positive means a connection exists
+	type pred_t = int64
+	pred := make([]pred_t, g.numNodes)
+	for s := uint(0); s < g.numNodes; s++ {
+		pred[s] = -1
+	}
 
 	ordered, err := g.TopSortKahn()
 	if err != nil {
@@ -222,22 +243,52 @@ func (g DiGraph) ShortestPath(source, target node) (result PathResult, err error
 
 	for _, u := range ordered {
 		for _, v := range g.Neighbors(u) {
-			w := g.GetEdge(u, v)
-			if w == nil {
-				return PathResult{}, fmt.Errorf("known edge %v->%v is not weighted", source, target)
-			}
-			if dist[v] > dist[u] + *w {
-				dist[v] = dist[u] + *w
-				pred[v] = &u
+			var w Weight = *g.GetEdge(u, v)
+			if dist[v] > dist[u] + w {
+				dist[v] = dist[u] + w
+				pred[v] = pred_t(u)
 			}
 		}
 	}
 
+	// detect that a path s->t may not exist
+	if dist[target] == math.MaxInt64 {
+		return
+	}
+
+
+	// Construct that path by looking at `prev`
+	//
+	// eg given pred: [-1 -1 1 2 -1]
+	//
+	// the path from 1 to 3 will be 1->2->3
+	//
+	// - pred[3] = 2
+	// - pred[2] = 1
+	//
+	// Normally I would implement this with a linked list then
+	// convert that to an array. However, my experience with the
+	// ergonomics of collections/list is not so good due to type
+	// erasure requiring type assertions which tend towards
+	// panics.
+	//
+	// Instead this build the path in reverse order ([3,2,1]) then
+	// reverses it
+
 	path := make([]node, 0)
-	curr := &target
-	for curr != nil && *curr != source {
-		path = append(path, *curr)
-		curr = pred[*curr]
+	curr := pred_t(target)
+	for curr > 0 && curr != pred_t(source) {
+		path = append(path, node(curr))
+		curr = pred[curr]
+	}
+	path = append(path, source)
+
+	for i, j := 0, len(path); i <= j; i++ {
+		j--
+		iv := path[i]
+		jv := path[j]
+		path[i] = jv
+		path[j] = iv
 	}
 
 	p := Path{

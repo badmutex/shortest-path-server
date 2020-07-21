@@ -76,17 +76,23 @@ func TestShortestPath(t *testing.T) {
 	g.AddEdge(1, 2, 1)
 	g.AddEdge(2, 3, 2)
 	g.AddEdge(1, 3, 9)
-	path, err := g.ShortestPath(0, 2)
+	path, err := g.ShortestPath(1, 3)
 	if err != nil {
 		t.Errorf("shortest path should succeed")
 	}
-	if path.Start != 0 {
+	if path.Path == nil {
+		t.Errorf("shortest path should return the path found")
+	}
+	if path.Start != 1 {
 		t.Errorf("path source not returned correctly: %+v", path)
 	}
-	if path.Dest != 2 {
+	if path.Dest != 3 {
 		t.Errorf("path destination not returned correctly: %+v", path)
 	}
-	if reflect.DeepEqual(path.Path, []node{0, 1, 2}) {
-		t.Errorf("path not correct: %+v", path)
+	if path.Path.Cost != 3 {
+		t.Errorf("path cost is not correct: %v", path.Path.Cost)
+	}
+	if !reflect.DeepEqual(path.Path.Path, []node{1, 2, 3}) {
+		t.Errorf("path not correct: %+v", path.Path)
 	}
 }
