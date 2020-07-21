@@ -198,8 +198,8 @@ impl DiGraph {
         //   for each v s.t. and edge u->v exists in E(G)
         //     w := weight(u -> v)
         //     if d[v] > d[u] + w
-        //       then d[v] := d[u] + w
-        //       else p[v] := u
+        //       d[v] := d[u] + w
+        //       p[v] := u
 
         let mut dist = Vec::with_capacity(self.num_nodes);
         dist.resize(self.num_nodes, std::f64::INFINITY);
