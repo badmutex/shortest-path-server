@@ -41,7 +41,6 @@ func TestDiGraph(t *testing.T) {
 		t.Errorf("wrong outdegree %+v", g)
 	}
 
-
 	if g.OutDegree(0) != 2 {
 		t.Errorf("wrong outdegree %+v", g)
 	}
@@ -69,5 +68,25 @@ func TestTopSortKahnCycleDetection(t *testing.T) {
 	_, err := g.TopSortKahn()
 	if err == nil {
 		t.Errorf("cycle not detected %+v", g)
+	}
+}
+
+func TestShortestPath(t *testing.T) {
+	g := NewDiGraph(5)
+	g.AddEdge(1, 2, 1)
+	g.AddEdge(2, 3, 2)
+	g.AddEdge(1, 3, 9)
+	path, err := g.ShortestPath(0, 2)
+	if err != nil {
+		t.Errorf("shortest path should succeed")
+	}
+	if path.Start != 0 {
+		t.Errorf("path source not returned correctly: %+v", path)
+	}
+	if path.Dest != 2 {
+		t.Errorf("path destination not returned correctly: %+v", path)
+	}
+	if reflect.DeepEqual(path.Path, []node{0, 1, 2}) {
+		t.Errorf("path not correct: %+v", path)
 	}
 }
